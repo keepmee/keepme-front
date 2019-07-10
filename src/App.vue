@@ -32,7 +32,8 @@
   import Preload  from './components/includes/Preload'
   import FormLoad from './components/includes/FormLoad'
 
-  import VueSidebar from 'vue-sidebar'
+  import VueSidebar from '../ssf_modules/vue-sidebar'
+  // import VueSidebar from 'vue-sidebar'
   // import VueSidebar from '../node_modules/vue-sidebar/VueSidebar'
 
   export default {
