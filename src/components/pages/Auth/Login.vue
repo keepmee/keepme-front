@@ -96,9 +96,15 @@
         let data = JSON.parse(JSON.stringify(this.user))
         data.password = sha1(data.password)
 
+        this.cookie.delete(this.$store.getters.COOKIE_NAME)
+        this.cookie.delete(this.$store.getters.COOKIE_NAME + '-user')
+
+
         this.api.post('/login', data).then((r) => {
           this.cookie.set(this.$store.getters.COOKIE_NAME, r.data.data.access_token, { expires: parseInt(r.data.data.expires_in / 86400) + 1 })
+          this.cookie.set(this.$store.getters.COOKIE_NAME + '-user', btoa(encodeURI(JSON.stringify(r.data.data.user))), { expires: parseInt(r.data.data.expires_in / 86400) + 1 })
           this.$router.push({ name: 'home' })
+          location.reload()
         })
       }
 

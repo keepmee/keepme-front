@@ -33,7 +33,7 @@
 
   .carousel-container {
     height: 600px !important;
-    background: url("../../../../../assets/img/auth.jpg") no-repeat fixed;
+    background: url("../../../../assets/img/auth.jpg") no-repeat fixed;
     background-size: 100% 100%;
   }
 

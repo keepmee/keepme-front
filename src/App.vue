@@ -3,12 +3,12 @@
 
     <div class="row w-100">
 
-      <sidebar-menu class="bg-color-4 color-1" :menu="menu" :width="width" @collapse="onCollapse"
-                    :collapsed="sidebarCollapsed" v-if="showSidebar"/>
+      <!--<sidebar-menu class="bg-color-4 color-1" :menu="menu" :width="width" @collapse="onCollapse"
+                    :collapsed="sidebarCollapsed" v-if="showSidebar"/>-->
 
 
       <div class="container-fluid px-0 ml-auto mr-0"
-           :class="{'w-75': (!sidebarCollapsed && showSidebar), 'almost-full-width': (sidebarCollapsed && showSidebar)}">
+           :class="{'sidebar-open': (!sidebarCollapsed && showSidebar), 'almost-full-width': (sidebarCollapsed && showSidebar)}">
 
         <!--<div class="col-12 my-2" v-if="showSidebar">-->
         <!--<img src="/static/img/logo.png" alt="Logo" class="img-fluid navbar-logo mx-auto d-block">-->
@@ -19,9 +19,10 @@
       </div>
     </div>
 
+    <vue-sidebar class="bg-color-4 color-1" :links="menu" v-if="showSidebar" @collapse="onCollapse"/>
 
-    <preload/>
-    <!--<form-load/>-->
+    <!--<preload/>-->
+    <form-load/>
 
   </div>
 </template>
@@ -31,12 +32,16 @@
   import Preload  from './components/includes/Preload'
   import FormLoad from './components/includes/FormLoad'
 
+  import VueSidebar from 'vue-sidebar'
+  // import VueSidebar from '../node_modules/vue-sidebar/VueSidebar'
+
   export default {
     name: 'App',
 
     components: {
       Preload,
       FormLoad,
+      VueSidebar,
     },
 
     watch: {
@@ -49,7 +54,7 @@
       this.checkRoute()
 
 
-      console.log(this.helpers.decode(this.cookie.get(this.$store.getters.COOKIE_NAME)))
+      // console.log(this.helpers.decode(this.cookie.get(this.$store.getters.COOKIE_NAME)))
 
 
     },
@@ -61,38 +66,32 @@
         showSidebar     : true,
         menu            : [
           {
-            header: true,
-            title : 'Main Navigation',
-            icon  : 'fa fa-user',
-            // component: componentName
-            // visibleOnCollapse: true
-          },
-          {
-            href : '/home',
             title: 'Accueil',
             icon : 'fal fa-1x5 fa-home',
-            /*
-            disabled: true
-            badge: {
-                text: 'new',
-                // class:''
-            }
-            */
+            name : 'home'
           },
           {
-            href : '/home/post/create',
             title: 'Poster',
             icon : 'fal fa-1x5 fa-layer-plus',
+            name : 'home.post.create'
           },
           {
-            title: 'Charts',
-            icon : 'fal fa-1x5 fa-chart-area',
-            child: [
-              {
-                href : '/charts/sublink',
-                title: 'Sub Link',
-              }
-            ]
+            title   : 'Profil',
+            icon    : 'fal fa-1x5 fa-user',
+            children: [{
+              title: 'Paramètres',
+              icon : 'fa fa-cog',
+              name : 'settings.index'
+            }, {
+              title: 'Voir le profil',
+              icon : 'fa fa-eye',
+              name : 'profile.index'
+            }, {
+              title: 'Déconnexion',
+              icon : 'fa fa-sign-out',
+              name : 'logout'
+            }],
+            routes  : ['profile.index', 'logout', 'settings.index']
           }
         ]
       }
@@ -106,7 +105,7 @@
       },
 
       onCollapse(collapsed) {
-        this.sidebarCollapsed = collapsed
+        this.sidebarCollapsed = !collapsed
       },
 
     }
@@ -127,6 +126,10 @@
     transition: width .3s, margin-left .3s;
   }
 
+  .container-fluid.sidebar-open {
+    width: calc(100% - 250px);
+  }
+
   .container-fluid.almost-full-width {
     width: calc(100% - 50px);
   }
@@ -135,54 +138,29 @@
     height: 50px;
   }
 
-  .v-sidebar-menu {
-    z-index: 111
+  .vue-sidebar .vue-sidebar-list .vue-sidebar-item.active-item .vue-sidebar-link {
+    -webkit-box-shadow: inset 3px 0 0 0 #EBC8B2 !important;
+    -moz-box-shadow: inset 3px 0 0 0 #EBC8B2 !important;
+    box-shadow: inset 3px 0 0 0 #EBC8B2 !important;
   }
 
-  .v-sidebar-menu .vsm-arrow:after,
-  .v-sidebar-menu .collapse-btn:after {
-    font-family: "Font Awesome 5 Pro", sans-serif;
-  }
-
-  .v-sidebar-menu .collapse-btn {
-    /*color: #001529 !important;*/
-    background-color: #EBC8B2 !important;
-    outline: 0 !important;
-  }
-
-  .v-sidebar-menu .vsm-item > .vsm-link > .vsm-icon {
-    background-color: transparent !important;
-  }
-
-  .v-sidebar-menu.vsm-collapsed .vsm-item.active-item > .vsm-link > .vsm-title,
-  .v-sidebar-menu.vsm-collapsed .vsm-item.active-item > .vsm-link > .vsm-icon,
-  .v-sidebar-menu .vsm-item:not(.active-item) > .vsm-link > .vsm-title,
-  .v-sidebar-menu .vsm-item:not(.active-item) > .vsm-link > .vsm-icon {
+  .vue-sidebar.open .vue-sidebar-list .vue-sidebar-item.active-item .vue-sidebar-link {
+    background-color: #000 !important;
     color: #EBC8B2 !important;
   }
 
-  .v-sidebar-menu .vsm-item:hover,
-  .v-sidebar-menu .vsm-item:hover {
-    background-color: #fff !important;
+  .vue-sidebar-toggle {
+    width: 100% !important;
+    background-color: #EBC8B2 !important;;
+    color: #fff;
+    margin-top: 0 !important;
+    padding: 10px 0 !important;
+    height: auto !important;
   }
 
-  .v-sidebar-menu .vsm-item.first-item.active-item > .vsm-link, .v-sidebar-menu .vsm-item.first-item.parent-active-item > .vsm-link {
-    -webkit-box-shadow: inset 3px 0 0 0 #EBC8B2;
-    -moz-box-shadow: inset 3px 0 0 0 #EBC8B2;
-    box-shadow: inset 3px 0 0 0 #EBC8B2;
+  .vue-sidebar .vue-sidebar-link.vue-sidebar-dropdown .vue-dropdown-menu {
+    background-color: #EBC8B2;
+    color: #fff;
   }
-
-  .v-sidebar-menu:not(.vsm-collapsed) .vsm-item.first-item.active-item {
-    background-color: #EBC8B2 !important;
-  }
-
-  .v-sidebar-menu .vsm-mobile-bg {
-    background-color: #EBC8B2 !important;
-  }
-
-  .v-sidebar-menu .vsm-item.mobile-item {
-    display: none !important;
-  }
-
 
 </style>

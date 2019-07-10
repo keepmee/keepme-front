@@ -56,12 +56,12 @@
   /*background-color: #fff1da !important;*/
 }
 
-/*.btn.bg-color-3:hover,
+.btn.bg-color-3:hover,
 .btn.bg-color-2:hover,
 .btn.bg-color-1:hover,
 .btn.bg-color-4:hover {
-  background-color: #fff!important;
-}*/
+  background-color: #fff !important;
+}
 
 .bg-light {
   background-color: #f8f9fa !important;

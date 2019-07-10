@@ -11,7 +11,7 @@
       </div>
 
       <div class="vmodal-body p-4">
-        <form>
+        <form @submit.prevent="save">
 
           <div class="row">
             <div class="col-12">
@@ -109,7 +109,7 @@
 
           <hr class="w-25 mb-5">
 
-          <div class="row">
+          <!--<div class="row">
             <div class="col-12 px-0">
               <div class="klk-form-group row">
                 <div class="col-12">
@@ -124,7 +124,32 @@
                 </div>
               </div>
             </div>
+          </div>-->
+
+          <div class="row">
+
+            <div class="col-12 mb-3">
+              <label class="h6 grey-text w-100 text-center mb-0">Les enfants à faire garder</label>
+              <hr class="w-25 mb-4">
+            </div>
+
+            <div class="col-12 px-0">
+              <div class="klk-form-group row">
+                <div class="col-4 mx-auto" v-for="child in children">
+                  <div class="klk-custom-checkbox w-100">
+                    <label class="mb-4 w-100">
+                      <input type="checkbox" @click="toggleChildren(child.id)"
+                             :checked="post.children.includes(child.id)">
+                      {{ child.firstname }} {{ child.lastname }}
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
+
+          <hr class="w-25 mb-5">
 
           <div class="row">
             <div class="col-12">
@@ -141,6 +166,15 @@
               <div class="klk-form-group">
                 <input type="text" class="form-control" name="note" id="note" v-model="post.note">
                 <label for="note"><i class="fal fa-info-circle mr-2 fa-xs"></i>Informations complémentaires</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12">
+              <div class="klk-form-group">
+                <button class="btn btn-block bg-color-1" type="submit">Poster l'annonce <i
+                  class="far fa-layer-plus"></i></button>
               </div>
             </div>
           </div>
@@ -162,6 +196,8 @@
   import { fr }     from 'vuejs-datepicker/dist/locale'
   import Home       from '../Index'
 
+  import moment from 'moment'
+
   export default {
     name: "Create",
 
@@ -173,9 +209,35 @@
 
     data() {
       return {
-        start: { date: null, time: { HH: "HH", mm: "mm" } },
-        end  : { date: null, time: { HH: "HH", mm: "mm" } },
-        post : {
+        children: [{
+          id       : 1,
+          firstname: "Enfant",
+          lastname : "Numéro 1",
+          birthday : "02/04/2014",
+          notes    : "Aucune note particulière",
+          parent_id: 1,
+        }, {
+          id       : 2,
+          firstname: "Enfant",
+          lastname : "Numéro 2",
+          birthday : "01/09/2013",
+          notes    : "Aucune note particulière",
+          parent_id: 1,
+        }],
+        start   : { date: null, time: { HH: "HH", mm: "mm" } },
+        end     : { date: null, time: { HH: "HH", mm: "mm" } },
+        post    : {
+          title      : "Un titre bidon",
+          description: "Une description bidon",
+          start      : null,
+          end        : null,
+          rate       : 9,
+          note       : "Une note particulière",
+          longitude  : null,
+          latitude   : null,
+          children   : []
+        }/*
+        post    : {
           title      : null,
           description: null,
           start      : null,
@@ -184,9 +246,9 @@
           note       : null,
           longitude  : null,
           latitude   : null,
-          children   : null
-        },
-        fr   : fr,
+          children   : []
+        }*/,
+        fr      : fr,
       }
     },
 
@@ -196,7 +258,7 @@
 
       setTimeout(() => {
         this.$modal.show('modal-create-post');
-      }, 2000)
+      }, 1000)
     },
 
     methods: {
@@ -246,6 +308,35 @@
 
       setChildren(nb) {
         this.post.children = nb
+      },
+
+      toggleChildren(id) {
+        if (this.post.children.includes(id)) {
+          // let tmp = this.post.children.indexOf(id)
+          this.post.children.splice(this.post.children.indexOf(id), 1)
+        }
+        else this.post.children.push(id)
+      },
+
+      save() {
+        let data = {
+          title      : this.post.title,
+          description: this.post.description,
+          start      : moment(`${moment(this.start.date).format('L')} ${this.start.time.HH}:${this.start.time.mm}:00`, 'DD/MM/YYYY HH:mm:ss'),
+          end        : moment(`${moment(this.end.date).format('L')} ${this.end.time.HH}:${this.end.time.mm}:00`, 'DD/MM/YYYY HH:mm:ss'),
+          rate       : this.post.rate,
+          note       : this.post.note,
+          longitude  : this.post.longitude,
+          latitude   : this.post.latitude,
+          children   : this.post.children,
+        }
+        // this.post.start = moment(`${moment(this.start.date).format('L')} ${this.start.time.HH}:${this.start.time.mm}:00`)
+        // this.post.end = moment(`${moment(this.end.date).format('L')} ${this.end.time.HH}:${this.end.time.mm}:00`)
+        // this.$forceUpdate()
+        // this.post = this.helpers.clone(this.post)
+        console.log(data)
+        // return
+        this.api.post('/koop', data).then(r => this.hideModal())
       }
 
     }

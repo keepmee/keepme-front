@@ -2,7 +2,7 @@
 
   <!-- MAP -->
   <gmap-map :center="center" :zoom="10" @dragstart="dragMapStart()" @dragend="dragMapEnd()"
-            @click="setCenter($event, true)">
+            @click="setCenter($event, true)" v-if="center">
 
     <!-- MARKERS -->
     <gmap-marker :key="index" v-for="(post, index) in posts" :position="post.location" :clickable="true"
@@ -27,7 +27,7 @@
 
     data() {
       return {
-        center      : { lat: 50.3667, lng: 3.0667 },
+        center      : { lat: 48.856613, lng: 2.352222 },
         radius      : 10000,
         // radius      : null,
         filtered    : null,
@@ -36,11 +36,19 @@
       }
     },
 
+
+    created() {
+      this.$getLocation({ enableHighAccuracy: true }).then(coordinates => {
+        this.center = JSON.parse(JSON.stringify(coordinates))
+      })
+    },
+
     watch: {
       circleRadius(value) {
         this.radius = value
       },
       mapCenter(value) {
+        console.log(value)
         this.center = value
       }
     },

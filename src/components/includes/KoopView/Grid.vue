@@ -2,7 +2,7 @@
   <div class="col-12 col-md-6 col-lg-4 mx-auto my-3">
 
     <!-- Card -->
-    <div class="card rounded z-depth-0 border mx-auto">
+    <div class="card rounded z-depth-0 border mx-auto" @click="apply(post.id)">
 
       <!-- Card header-->
       <div class="card-header rounded border-0 p-0 white z-depth-1">
@@ -103,13 +103,15 @@
   export default {
     name: "Grid",
 
-    props: ['post', 'getDistance', 'getTime', 'getImage'],
+    props: ['post', 'getDistance', 'getTime', 'getImage', 'apply'],
 
     data() {
       return {
         gClass: null
       }
     },
+
+    methods: {}
   }
 </script>
 

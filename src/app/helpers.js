@@ -7,7 +7,6 @@
  * @author sofianeakbly
  **/
 
-
 import moment       from 'moment'
 import date         from 'moment-timezone'
 import VueJwtDecode from 'vue-jwt-decode'
@@ -22,8 +21,6 @@ helpers.twoDigits = (n) => {
 
 helpers.moment = (d = null) => {
   date.locale('fr')
-  // date.tz.setDefault('Europe/Paris')
-  // return d === null ? date.tz(moment(), 'Europe/Paris') : date.tz(d, 'Europe/Paris')
   return d === null ? moment() : moment(d)
 }
 
@@ -43,16 +40,16 @@ helpers.distance2 = (lat1, lon1, lat2, lon2, unit) => {
 }
 
 helpers.distance = (lat1, lon1, lat2, lon2, unit) => {
-  var R = 6371; // km
-  var dLat = helpers.toRad(lat2 - lat1);
-  var dLon = helpers.toRad(lon2 - lon1);
+  let R = 6371; // km
+  let dLat = helpers.toRad(lat2 - lat1), dLon = helpers.toRad(lon2 - lon1), a, c, d;
+
   lat1 = helpers.toRad(lat1);
   lat2 = helpers.toRad(lat2);
 
-  var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
-  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  var d = R * c;
+  a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+  // c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  d = R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+  // d = R * c;
   return unit === 'm' ? d * 1000 : d;
 }
 
@@ -70,8 +67,28 @@ helpers.decode = (token) => {
 
 helpers.userIsAuthenticate = () => {
   let token = cookie.get(store.getters.COOKIE_NAME)
-  console.log('token exists', (token && token !== null && token.trim() !== ""))
   return (token && token !== null && token.trim() !== "")
+}
+
+helpers.getUserCookie = () => {
+  let user = cookie.get(store.getters.COOKIE_NAME + '-user')
+  return (user && user !== null && user.trim() !== "") ? JSON.parse(decodeURI(atob(user))) : null
+}
+
+helpers.equals = (obj1, obj2) => {
+  if (Object.keys(obj1).length !== Object.keys(obj2).length) return false
+
+  let equals = true
+
+  Object.keys(obj1).map((o, key) => {
+    if (obj1[o] !== obj2[o]) equals = false
+  })
+
+  return equals
+}
+
+helpers.loading = (load = true) => {
+  store.commit('setFormLoad', load)
 }
 
 export default helpers

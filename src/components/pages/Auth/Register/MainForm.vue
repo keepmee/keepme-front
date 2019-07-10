@@ -110,7 +110,7 @@
           lastname        : 'Sofiane',
           email           : 'sofiane.akbly@gmail.com',
           password        : 'toto',
-          confirm_password: 'toto'
+          confirm_password: 'toto',
         }
         // this.user = { firstname: null, lastname: null, email: null, password: null, confirm_password: null }
       },
@@ -164,11 +164,14 @@
         data.password = sha1(data.password)
         delete data.confirm_password
 
+        // this.$store.commit('setFormLoad', true)
 
         this.api.post('/register', data).then((r) => {
+          this.$store.commit('setFormLoad', false)
           this.cookie.set(this.$store.getters.COOKIE_NAME, r.data.data.access_token, { expires: parseInt(r.data.data.expires_in / 86400) + 1 })
           this.$router.push({ name: 'home' })
-        })
+          location.reload()
+        }, () => this.$store.commit('setFormLoad', false))
 
       }
 

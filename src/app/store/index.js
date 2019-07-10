@@ -15,7 +15,7 @@ const state = {
   APP_NAME   : 'keepme-front', // Nom de l'application et du cookie
   API_SERVER : "http://localhost:4001", // Adresse du serveur
   COOKIE_NAME: "keepme_token", // Adresse du serveur
-  GMAPS_KEY  : '',
+  GMAPS_KEY  : 'AIzaSyDmlw5nwiNkWJo3Xznkn05vLFpP10lBXjU',
   form_load  : false, // Le formulaire est submit
 }
 

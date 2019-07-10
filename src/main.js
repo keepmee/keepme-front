@@ -45,6 +45,11 @@ Vue.prototype.helpers = helpers
 Vue.prototype.swal = swal
 Vue.prototype.cookie = cookie
 
+
+String.prototype.capitalize = function () {
+  return this.charAt(0).toUpperCase() + this.slice(1)
+}
+
 new Vue({
   el        : '#app',
   router,

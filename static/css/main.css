@@ -37,6 +37,10 @@ body {
   border-radius: 10px !important;
 }
 
+.border-strong {
+  border-width: 2px !important;
+}
+
 /*
  *
  * FORM
